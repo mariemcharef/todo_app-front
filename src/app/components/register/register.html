@@ -1,0 +1,54 @@
+<div class="register-container">
+  <div class="register-card">
+    <h2>Register</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" formControlName="email" class="form-control">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="first_name">First Name</label>
+          <input type="text" id="first_name" formControlName="first_name" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="last_name">Last Name</label>
+          <input type="text" id="last_name" formControlName="last_name" class="form-control">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <input type="password" id="password" formControlName="password" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="confirm_password">Confirm Password *</label>
+        <input type="password" id="confirm_password" formControlName="confirm_password" class="form-control">
+        
+        <div *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('confirm_password')?.touched" class="error-message">
+          Passwords do not match
+        </div>
+      </div>
+
+
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+      
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      
+      <button type="submit" [disabled]="loading || registerForm.invalid" class="btn btn-primary">
+        {{ loading ? 'Loading...' : 'Register' }}
+      </button>
+
+      <div class="links">
+        <a routerLink="/login">Already have an account? Login</a>
+      </div>
+    </form>
+  </div>
+</div>

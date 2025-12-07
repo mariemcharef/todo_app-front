@@ -1,0 +1,10 @@
+<nav class="navbar">
+  <a routerLink="/tasks" class="nav-link">Task Manager</a>
+  <a routerLink="/account" class="nav-link">Account</a>
+
+
+    <button *ngIf="authService.isAuthenticated()" (click)="logout()" class="nav-link btn-logout">
+      Logout
+    </button>
+  
+</nav>

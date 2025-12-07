@@ -1,0 +1,18 @@
+<div class="account-container" *ngIf="form">
+  <h2>Account</h2>
+
+  <form [formGroup]="form" (ngSubmit)="update()">
+    
+    <label>Email</label>
+    <input type="text" formControlName="email"  class="readonly-input" />
+
+    <label>First Name</label>
+    <input type="text" formControlName="first_name" />
+
+    <label>Last Name</label>
+    <input type="text" formControlName="last_name" />
+
+    <button type="submit" [disabled]="form.invalid">Update</button>
+
+  </form>
+</div>
