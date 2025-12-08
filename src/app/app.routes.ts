@@ -14,6 +14,7 @@ export const routes: Routes = [
   { path: '', redirectTo: '/tasks', pathMatch: 'full' },
   { path: 'login', component: Login },
   { path: 'forgot-password', component: ForgotPassword},
+  { path: 'resetPassword', component:ResetPassword },
   { path: 'confirmAccount', component: ConfirmAccount},
   { path: 'register', component: Register },
   { path: 'tasks', component: TaskList, canActivate: [AuthGuard] },

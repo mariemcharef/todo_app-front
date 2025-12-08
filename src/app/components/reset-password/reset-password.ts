@@ -15,7 +15,7 @@ export class ResetPassword implements OnInit {
   loading: boolean = false;
   errorMessage = '';
   successMessage = '';
-  resetToken = '';
+  reset_code = '';
 
   constructor(
     private fb: FormBuilder,
@@ -30,7 +30,7 @@ export class ResetPassword implements OnInit {
   }
 
   ngOnInit(): void {
-    this.resetToken = this.route.snapshot.queryParamMap.get('token') || '';
+    this.reset_code = this.route.snapshot.queryParamMap.get('reset_code') || '';
   }
 
   passwordMatchValidator(g: FormGroup) {
@@ -48,7 +48,7 @@ export class ResetPassword implements OnInit {
     this.successMessage = '';
 
     const data = {
-      reset_password_token: this.resetToken,
+      reset_password_token: this.reset_code,
       ...this.resetPasswordForm.value
     };
 

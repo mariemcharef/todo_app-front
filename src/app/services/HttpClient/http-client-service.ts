@@ -33,7 +33,6 @@ export class HttpClientService {
     return this.http.delete<T>(url, { headers: this.getAuthHeaders() });
   }
 
-  // Add this patch method
   patch<T>(url: string, body: any): Observable<T> {
     return this.http.patch<T>(url, body, { headers: this.getAuthHeaders() });
   }
