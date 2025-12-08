@@ -1,10 +1,12 @@
 import { Component , OnInit} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { authService } from '../../services/auth/auth-service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router,RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-reset-password',
-  imports: [],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
 })
@@ -37,7 +39,7 @@ export class ResetPassword implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.resetPasswordForm.invalid || !this.resetToken) {
+    if (this.resetPasswordForm.invalid) {
       return;
     }
 

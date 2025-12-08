@@ -6,8 +6,7 @@ import {
   LoginCredentials, 
   TokenResponse, 
   ForgotPassword, 
-  ResetPassword, 
-  ConfirmAccount 
+  ResetPassword 
 } from '../../classes/interfaces/Auth';
 import { User } from '../../classes/interfaces/User';
 import { BaseResponse } from '../../classes/interfaces/Response';
@@ -77,8 +76,9 @@ export class authService {
     return this.http.patch<BaseResponse>(`${this.apiUrl}/resetPassword`, data);
   }
 
-  confirmAccount(data: ConfirmAccount): Observable<BaseResponse> {
-    return this.http.patch<BaseResponse>(`${this.apiUrl}/confirmAccount`, data);
+  confirmAccount(code: string): Observable<BaseResponse> {
+    const payload = {code : code};
+    return this.http.patch<BaseResponse>(`${this.apiUrl}/confirmAccount`, payload);
   }
 
   logout(): Observable<BaseResponse> {

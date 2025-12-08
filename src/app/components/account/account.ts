@@ -10,7 +10,7 @@ import { User } from '../../classes/interfaces/User';
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule], 
   templateUrl: './account.html',
-  styleUrl: './account.css',
+  styleUrls: ['./account.css'],
 })
 export class Account implements OnInit {
    form!: FormGroup;
