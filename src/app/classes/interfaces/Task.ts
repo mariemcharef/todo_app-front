@@ -23,11 +23,20 @@ export interface TaskCreate {
   state?: string;
 }
 
-export interface TaskStats {
+export class TaskStats {
   total: number;
   todo: number;
   doing: number;
   done: number;
   overdue: number;
   completion_rate: number;
+
+  constructor() {
+    this.total = 0;
+    this.todo = 0;
+    this.doing = 0;
+    this.done = 0;
+    this.overdue = 0;
+    this.completion_rate = 0;
+  }
 }

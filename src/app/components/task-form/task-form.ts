@@ -4,7 +4,6 @@ import { Task } from '../../classes/interfaces/Task';
 import { TaskService } from '../../services/task/task-service';
 import { CommonModule } from '@angular/common';
 
-
 @Component({
   selector: 'app-task-form',
   imports: [CommonModule, ReactiveFormsModule],
@@ -21,33 +20,71 @@ export class TaskForm implements OnInit {
   errorMessage = '';
   isEditMode = false;
 
+
+  stateOptions = [
+    { value: 'todo', label: 'To Do' },
+    { value: 'doing', label: 'In Progress' },
+    { value: 'done', label: 'Done' }
+  ];
+
+  tagOptions = [
+    { value: 'optional', label: 'Optional' },
+    { value: 'important', label: 'Important' },
+    { value: 'urgent', label: 'Urgent' }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private taskService: TaskService
   ) {
     this.taskForm = this.fb.group({
-      title: ['', [Validators.required]],
+      title: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
-      completed: [false]
+      due_date: [''],
+      tag: [''],
+      state: ['todo'] 
     });
   }
 
   ngOnInit(): void {
     if (this.task) {
       this.isEditMode = true;
-      this.taskForm.patchValue(this.task);
+      
+      const formValue = { ...this.task };
+      if (formValue.due_date) {
+        const date = new Date(formValue.due_date);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        formValue.due_date = `${year}-${month}-${day}T${hours}:${minutes}`;
+      }
+      
+      this.taskForm.patchValue(formValue);
     }
   }
 
   onSubmit(): void {
     if (this.taskForm.invalid) {
+      Object.keys(this.taskForm.controls).forEach(key => {
+        this.taskForm.get(key)?.markAsTouched();
+      });
       return;
     }
 
     this.loading = true;
     this.errorMessage = '';
 
-    const taskData = this.taskForm.value;
+    const taskData = { ...this.taskForm.value };
+    
+    if (taskData.due_date) {
+      taskData.due_date = new Date(taskData.due_date).toISOString();
+    }
+
+    if (!taskData.description) delete taskData.description;
+    if (!taskData.due_date) delete taskData.due_date;
+    if (!taskData.tag) delete taskData.tag;
 
     const request = this.isEditMode
       ? this.taskService.updateTask(this.task!.id!, taskData)
@@ -71,5 +108,15 @@ export class TaskForm implements OnInit {
 
   onClose(): void {
     this.close.emit();
+  }
+
+  get minDateTime(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 }

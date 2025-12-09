@@ -1,88 +1,126 @@
 <div class="task-list-container">
-  <!-- Header -->
   <div class="header">
     <h1>My Tasks</h1>
     <div class="header-actions">
       <button 
         class="btn btn-secondary" 
         (click)="onRefresh()"
-        [disabled]="loading"
+        
         title="Refresh tasks">
         🔄 Refresh
       </button>
       <button 
         class="btn btn-primary" 
         (click)="openCreateModal()"
-        [disabled]="loading">
+        >
         + Create Task
       </button>
     </div>
   </div>
 
-  <!-- Statistics -->
-  <div class="task-stats" [class.loading]="statsLoading">
-    <div class="stat-item">
-      <span class="stat-label">Total:</span>
-      <span class="stat-value">{{ stats.total }}</span>
+  <div class="task-stats" >
+    <div class="stat-item stat-info">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <span class="stat-label">Total</span>
+        <span class="stat-value">{{ stats.total }}</span>
+      </div>
     </div>
-    <div class="stat-item">
-      <span class="stat-label">Todo:</span>
-      <span class="stat-value">{{ stats.todo }}</span>
+    <div class="stat-item stat-todo">
+      <div class="stat-icon">📋</div>
+      <div class="stat-content">
+        <span class="stat-label">Todo</span>
+        <span class="stat-value">{{ stats.todo }}</span>
+      </div>
     </div>
-    <div class="stat-item">
-      <span class="stat-label">Doing:</span>
-      <span class="stat-value">{{ stats.doing }}</span>
+    <div class="stat-item stat-doing">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-content">
+        <span class="stat-label">Doing</span>
+        <span class="stat-value">{{ stats.doing }}</span>
+      </div>
     </div>
-    <div class="stat-item">
-      <span class="stat-label">Done:</span>
-      <span class="stat-value">{{ stats.done }}</span>
+    <div class="stat-item stat-done">
+      <div class="stat-icon">✅</div>
+      <div class="stat-content">
+        <span class="stat-label">Done</span>
+        <span class="stat-value">{{ stats.done }}</span>
+      </div>
     </div>
     <div class="stat-item stat-warning">
-      <span class="stat-label">Overdue:</span>
-      <span class="stat-value">{{ stats.overdue }}</span>
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-content">
+        <span class="stat-label">Overdue</span>
+        <span class="stat-value">{{ stats.overdue }}</span>
+      </div>
     </div>
     <div class="stat-item stat-success">
-      <span class="stat-label">Completion:</span>
-      <span class="stat-value">{{ stats.completion_rate }}%</span>
+      <div class="stat-icon">🎯</div>
+      <div class="stat-content">
+        <span class="stat-label">Completion</span>
+        <span class="stat-value">{{ stats.completion_rate }}%</span>
+      </div>
     </div>
   </div>
 
-  <!-- Messages -->
-  <div class="error-message" *ngIf="errorMessage" role="alert">
-    <strong>Error:</strong> {{ errorMessage }}
-  </div>
-  
-  <div class="success-message" *ngIf="successMessage" role="status">
-    <strong>Success:</strong> {{ successMessage }}
+  <div class="message-container">
+    <div class="error-message" *ngIf="errorMessage" role="alert">
+      <span class="message-icon">❌</span>
+      <span class="message-text">{{ errorMessage }}</span>
+      <button class="message-close" (click)="errorMessage = ''" aria-label="Close">&times;</button>
+    </div>
+    
+    <div class="success-message" *ngIf="successMessage" role="status">
+      <span class="message-icon">✅</span>
+      <span class="message-text">{{ successMessage }}</span>
+      <button class="message-close" (click)="successMessage = ''" aria-label="Close">&times;</button>
+    </div>
   </div>
 
-  <!-- Loading State -->
-  <div class="loading" *ngIf="loading">
-    <div class="spinner"></div>
-    <p>Loading tasks...</p>
-  </div>
-
-  <!-- Task List -->
-  <div class="tasks" *ngIf="!loading && hasTasks">
+  <div class="tasks" *ngIf=" hasTasks">
     <div 
       class="task-card" 
       *ngFor="let task of tasks; trackBy: trackByTaskId" 
       [class.completed]="task.state === State.DONE"
-      [class.overdue]="task.due_date && task.state !== State.DONE">
-      
+      [class.overdue]="isOverdue(task)"
+      [class.in-progress]="task.state === State.DOING">
+
+      <div class="overdue-badge" *ngIf="isOverdue(task)">
+        ⚠️ Overdue
+      </div>
+
       <div class="task-header">
-        <input 
-          type="checkbox" 
-          [checked]="task.state === State.DONE" 
-          (change)="toggleComplete(task)"
-          [id]="'task-' + task.id"
-          class="task-checkbox">
-        <label [for]="'task-' + task.id" class="task-title">
-          <h3>{{ task.title }}</h3>
-        </label>
-        <span class="task-state" [class]="'state-' + task.state">
-          {{ task.state }}
-        </span>
+        <div class="task-checkbox-wrapper">
+          <input 
+            type="checkbox" 
+            [checked]="task.state === State.DONE" 
+            (change)="toggleComplete(task, $event)"
+            [id]="'task-checkbox-' + task.id"
+            class="task-checkbox"
+            >
+          <label [for]="'task-checkbox-' + task.id" class="checkbox-label"></label>
+        </div>
+        
+        <div class="task-title-wrapper">
+          <h3 class="task-title" [class.completed]="task.state === State.DONE">
+            {{ task.title }}
+          </h3>
+          <div class="task-badges">
+            <span 
+              class="task-state-badge" 
+              [class]="getStateInfo(task.state).class"
+              [title]="'Click to change to ' + getNextState(task.state)"
+              (click)="toggleTaskState(task)">
+              {{ getStateInfo(task.state).icon }} {{ getStateInfo(task.state).label }}
+            </span>
+            <span 
+              class="task-tag-badge" 
+              *ngIf="task.tag"
+              [class]="getTagClass(task.tag)">
+              {{ task.tag }}
+            </span>
+          </div>
+        </div>
       </div>
 
       <p class="task-description" *ngIf="task.description">
@@ -90,61 +128,76 @@
       </p>
 
       <div class="task-meta">
-        <small class="meta-item">
-          <strong>Created:</strong> {{ task.created_on | date:'short' }}
-        </small>
-        <small class="meta-item" *ngIf="task.due_date">
-          <strong>Due:</strong> {{ task.due_date | date:'short' }}
-        </small>
-        <span class="task-tag" *ngIf="task.tag">
-          {{ task.tag }}
-        </span>
+        <div class="meta-item">
+          <span class="meta-icon">📅</span>
+          <span class="meta-text">
+            <strong>Created:</strong> {{ task.created_on | date:'short' }}
+          </span>
+        </div>
+        <div class="meta-item" *ngIf="task.due_date">
+          <span class="meta-icon" [class.overdue-icon]="isOverdue(task)">
+            {{ isOverdue(task) ? '⚠️' : '🕒' }}
+          </span>
+          <span class="meta-text" [class.overdue-text]="isOverdue(task)">
+            <strong>Due:</strong> {{ task.due_date | date:'short' }}
+          </span>
+        </div>
       </div>
 
       <div class="task-actions">
         <button 
+          class="btn btn-sm btn-state" 
+          (click)="toggleTaskState(task)"
+          
+          [title]="'Change to ' + getNextState(task.state)">
+          {{ getStateInfo(getNextState(task.state)).icon }} Next: {{ getStateInfo(getNextState(task.state)).label }}
+        </button>
+        <button 
           class="btn btn-sm btn-secondary" 
           (click)="openEditModal(task)"
-          [disabled]="loading">
-          Edit
+          >
+          ✏️ Edit
         </button>
         <button 
           class="btn btn-sm btn-danger" 
           (click)="deleteTask(task.id!)"
-          [disabled]="loading">
-          Delete
+          >
+          🗑️ Delete
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Empty State -->
-  <div class="empty-state" *ngIf="!loading && !hasTasks">
+
+  <div class="empty-state" *ngIf=" !hasTasks">
     <div class="empty-icon">📋</div>
     <h3>No tasks yet</h3>
     <p>Create your first task to get started!</p>
-    <button class="btn btn-primary" (click)="openCreateModal()">
-      + Create Task
+    <button class="btn btn-primary btn-lg" (click)="openCreateModal()">
+      + Create Your First Task
     </button>
   </div>
 
-  <!-- Pagination -->
-  <div class="pagination" *ngIf="totalPages > 1 && !loading">
+  <div class="pagination" *ngIf="totalPages > 1 ">
     <button 
-      class="btn btn-sm" 
+      class="btn btn-sm btn-pagination" 
       [disabled]="currentPage === 1" 
       (click)="goToPage(currentPage - 1)"
       aria-label="Previous page">
       ← Previous
     </button>
     
-    <span class="pagination-info">
-      Page <strong>{{ currentPage }}</strong> of <strong>{{ totalPages }}</strong>
-      <span class="total-records">({{ totalRecords }} total)</span>
-    </span>
+    <div class="pagination-info">
+      <span class="page-indicator">
+        Page <strong>{{ currentPage }}</strong> of <strong>{{ totalPages }}</strong>
+      </span>
+      <span class="record-count">
+        ({{ totalRecords }} {{ totalRecords === 1 ? 'task' : 'tasks' }})
+      </span>
+    </div>
     
     <button 
-      class="btn btn-sm" 
+      class="btn btn-sm btn-pagination" 
       [disabled]="currentPage === totalPages" 
       (click)="goToPage(currentPage + 1)"
       aria-label="Next page">
@@ -152,7 +205,6 @@
     </button>
   </div>
 
-  <!-- Task Form Modal -->
   <app-task-form 
     *ngIf="showModal" 
     [task]="editingTask" 
