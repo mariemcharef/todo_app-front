@@ -1,11 +1,10 @@
-/* Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  background: rgba(0, 0, 0, 0.5); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,7 +12,7 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Modal content */
+
 .modal-content {
   background: #fff;
   border-radius: 8px;
@@ -25,7 +24,6 @@
   animation: slideIn 0.3s ease-in-out;
 }
 
-/* Header */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -51,7 +49,6 @@
   color: #000;
 }
 
-/* Form elements */
 .form-group {
   margin-bottom: 15px;
   display: flex;
@@ -89,14 +86,12 @@ textarea.form-control {
   margin-right: 8px;
 }
 
-/* Error messages */
 .error-message {
   color: #dc3545;
   font-size: 0.875rem;
   margin-top: 4px;
 }
 
-/* Actions */
 .modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -136,7 +131,6 @@ textarea.form-control {
   cursor: not-allowed;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
