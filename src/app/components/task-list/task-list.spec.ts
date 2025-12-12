@@ -55,7 +55,10 @@ describe('TaskList', () => {
       toggleState: vi.fn().mockReturnValue(of({ status: 200 })),
       toggleComplete: vi.fn().mockReturnValue(of({ status: 200 }))
     };
-
+    Object.defineProperty(window, "confirm", {
+      value: vi.fn(),
+      writable: true,
+    });
     vi.spyOn(window, "confirm").mockReturnValue(true);
 
     await TestBed.configureTestingModule({
