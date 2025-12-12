@@ -41,7 +41,6 @@ input:focus {
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
 }
 
-/* Read-only email style */
 .readonly-input {
   background: #f4f4f4;
   color: #666;

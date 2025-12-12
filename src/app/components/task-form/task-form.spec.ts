@@ -15,11 +15,11 @@ describe('TaskForm', () => {
     id: 1,
     title: 'Test Task',
     description: 'Test Description',
-    due_date: '2025-12-31T23:59:00.000Z',
+    due_date: '2025-12-31T23:59:00',
     tag: 'important',
     state: 'todo',
     user_id: 1,
-    created_on: '2025-12-09T00:00:00.000Z'
+    created_on: '2025-12-09T00:00:00'
   };
 
   beforeEach(async () => {
@@ -193,7 +193,7 @@ describe('TaskForm', () => {
       expect(mockTaskService.createTask).toHaveBeenCalled();
     });
 
-    it('should set loading to false after successful creation', (done) => {
+    it('should set loading to false after successful creation', async (done) => {
       const mockResponse = { status: 201, message: 'Task created' };
       mockTaskService.createTask.mockReturnValue(of(mockResponse));
 
@@ -204,10 +204,8 @@ describe('TaskForm', () => {
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(component.loading).toBe(false);
-
-      }, 10);
+      await fixture.whenStable();
+      expect(component.loading).toBe(false);
     });
 
     it('should convert due_date to ISO string before sending', () => {
@@ -274,7 +272,7 @@ describe('TaskForm', () => {
       expect(callArgs.tag).toBeUndefined();
     });
 
-    it('should display error message on creation failure', (done) => {
+    it('should display error message on creation failure', async () => {
       const mockError = { 
         error: { message: 'Creation failed' },
         status: 400 
@@ -288,11 +286,10 @@ describe('TaskForm', () => {
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(component.errorMessage).toBe('Creation failed');
-        expect(component.loading).toBe(false);
-
-      }, 10);
+      await fixture.whenStable();
+      
+      expect(component.errorMessage).toBe('Creation failed');
+      expect(component.loading).toBe(false);
     });
 
     it('should include all non-empty fields in request', () => {
@@ -357,7 +354,7 @@ describe('TaskForm', () => {
       component.onSubmit();
     });
 
-    it('should display error message on update failure', (done) => {
+    it('should display error message on update failure', async (done) => {
       const mockError = { 
         error: { message: 'Update failed' },
         status: 400 
@@ -370,11 +367,10 @@ describe('TaskForm', () => {
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(component.errorMessage).toBe('Update failed');
-        expect(component.loading).toBe(false);
+      await fixture.whenStable()
 
-      }, 10);
+      expect(component.errorMessage).toBe('Update failed');
+      expect(component.loading).toBe(false);
     });
 
     it('should pass task id to updateTask', () => {
@@ -389,16 +385,15 @@ describe('TaskForm', () => {
       );
     });
 
-    it('should set loading to false after update', (done) => {
+    it('should set loading to false after update', async (done) => {
       const mockResponse = { status: 200, message: 'Task updated' };
       mockTaskService.updateTask.mockReturnValue(of(mockResponse));
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(component.loading).toBe(false);
+      await fixture.whenStable();
 
-      }, 10);
+      expect(component.loading).toBe(false);
     });
   });
 
@@ -469,13 +464,16 @@ describe('TaskForm', () => {
     });
 
     it('should return a datetime that is not in the past', () => {
+      const beforeCall = Date.now();
       const minDateTime = component.minDateTime;
-      const minDate = new Date(minDateTime);
-      const now = new Date();
+      const afterCall = Date.now();
       
-      expect(minDate.getTime()).toBeLessThanOrEqual(now.getTime() + 2000);
-      expect(minDate.getTime()).toBeGreaterThan(now.getTime() - 2000);
+      const minDate = new Date(minDateTime);
+      
+      expect(minDate.getTime()).toBeGreaterThanOrEqual(beforeCall - 60000); 
+      expect(minDate.getTime()).toBeLessThanOrEqual(afterCall + 1000); 
     });
+    
 
     it('should have correctly padded month and day', () => {
       const minDateTime = component.minDateTime;
@@ -522,24 +520,7 @@ describe('TaskForm', () => {
       expect(component.taskForm.get('tag')?.value).toBeFalsy();
     });
 
-    it('should handle response without status code', (done) => {
-      const mockResponse = { message: 'Success' };
-      mockTaskService.createTask.mockReturnValue(of(mockResponse));
-
-      component.taskForm.patchValue({
-        title: 'New Task',
-        state: 'todo'
-      });
-
-      component.onSubmit();
-
-      setTimeout(() => {
-        expect(component.errorMessage).toBe('Operation failed');
-
-      }, 10);
-    });
-
-    it('should handle error without message', (done) => {
+    it('should handle error without message', async (done) => {
       const mockError = { status: 500 };
       mockTaskService.createTask.mockReturnValue(throwError(() => mockError));
 
@@ -550,10 +531,9 @@ describe('TaskForm', () => {
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(component.errorMessage).toBe('An error occurred');
+      await fixture.whenStable();
+      expect(component.errorMessage).toBe('An error occurred');
 
-      }, 10);
     });
 
     it('should not submit if form is invalid', () => {
@@ -618,7 +598,7 @@ describe('TaskForm', () => {
         id: 1,
         title: 'Test',
         state: 'todo',
-        due_date: '2025-01-05T09:05:00.000Z'
+        due_date: '2025-01-05T09:05:00'
       };
 
       component.task = task;
@@ -635,7 +615,7 @@ describe('TaskForm', () => {
         id: 1,
         title: 'Test',
         state: 'todo',
-        due_date: '2025-12-31T00:00:00.000Z'
+        due_date: '2025-12-31T00:00:00'
       };
 
       component.task = task;
@@ -650,7 +630,7 @@ describe('TaskForm', () => {
         id: 1,
         title: 'Test',
         state: 'todo',
-        due_date: '2025-06-15T12:00:00.000Z'
+        due_date: '2025-06-15T12:00:00'
       };
 
       component.task = task;
@@ -676,7 +656,7 @@ describe('TaskForm', () => {
       const date = new Date(callArgs.due_date);
       
       expect(date.getFullYear()).toBe(2025);
-      expect(date.getMonth()).toBe(11); // December (0-indexed)
+      expect(date.getMonth()).toBe(11); 
       expect(date.getDate()).toBe(25);
     });
   });

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router'; 
-import { authService } from '../../services/auth/auth-service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { User } from '../../classes/interfaces/User';
-
+import { authService } from '../../services/auth/auth-service';
 @Component({
   selector: 'app-account',
   standalone: true,

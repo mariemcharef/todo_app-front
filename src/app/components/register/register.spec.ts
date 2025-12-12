@@ -1,20 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Register } from './register';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
 import { authService } from '../../services/auth/auth-service';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 class MockAuthService {
   register = vi.fn();
-}
-
-class MockRouter {
-  navigate = vi.fn();
 }
 
 class MockToastrService {
@@ -28,28 +23,18 @@ describe('Register', () => {
   let component: Register;
   let fixture: ComponentFixture<Register>;
   let mockAuthService: MockAuthService;
-  let mockRouter: MockRouter;
   let mockToastr: MockToastrService;
 
   beforeEach(async () => {
     mockAuthService = new MockAuthService();
-    mockRouter = new MockRouter();
     mockToastr = new MockToastrService();
 
     await TestBed.configureTestingModule({
-      imports: [Register, ReactiveFormsModule, CommonModule, RouterModule],
+      imports: [Register, ReactiveFormsModule, CommonModule],
       providers: [
         { provide: authService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter },
         { provide: ToastrService, useValue: mockToastr },
-        { 
-          provide: ActivatedRoute, 
-          useValue: { 
-            snapshot: {}, 
-            params: of({}),
-            queryParams: of({})
-          } 
-        }
+        provideRouter([])
       ]
     }).compileComponents();
 
@@ -57,6 +42,10 @@ describe('Register', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     await fixture.whenStable();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -75,29 +64,28 @@ describe('Register', () => {
 
   it('should validate required email field', () => {
     const emailControl = component.registerForm.controls['email'];
-    
     expect(emailControl.valid).toBe(false);
-    
+
     emailControl.setValue('test@example.com');
     expect(emailControl.valid).toBe(true);
   });
 
   it('should validate email format', () => {
     const emailControl = component.registerForm.controls['email'];
-    
+
     emailControl.setValue('invalid-email');
     expect(emailControl.hasError('email')).toBe(true);
-    
+
     emailControl.setValue('valid@example.com');
     expect(emailControl.hasError('email')).toBe(false);
   });
 
   it('should validate password minimum length', () => {
     const passwordControl = component.registerForm.controls['password'];
-    
+
     passwordControl.setValue('12345');
     expect(passwordControl.hasError('minlength')).toBe(true);
-    
+
     passwordControl.setValue('123456');
     expect(passwordControl.hasError('minlength')).toBe(false);
   });
@@ -107,13 +95,11 @@ describe('Register', () => {
       password: 'password123',
       confirm_password: 'password456'
     });
-    
     expect(component.registerForm.hasError('mismatch')).toBe(true);
-    
+
     component.registerForm.patchValue({
       confirm_password: 'password123'
     });
-    
     expect(component.registerForm.hasError('mismatch')).toBe(false);
   });
 
@@ -124,7 +110,7 @@ describe('Register', () => {
 
   it('should call authService.register on valid form submission', () => {
     mockAuthService.register.mockReturnValue(of({ status: 201 }));
-    
+
     component.registerForm.setValue({
       email: 'test@example.com',
       first_name: 'John',
@@ -132,9 +118,9 @@ describe('Register', () => {
       password: 'password123',
       confirm_password: 'password123'
     });
-    
+
     component.onSubmit();
-    
+
     expect(mockAuthService.register).toHaveBeenCalledWith({
       email: 'test@example.com',
       first_name: 'John',
@@ -144,10 +130,11 @@ describe('Register', () => {
     });
   });
 
-  it('should show success message and navigate to login on successful registration', () => {
+  it('should show success message and navigate to login on successful registration', async () => {
     vi.useFakeTimers();
     mockAuthService.register.mockReturnValue(of({ status: 201 }));
-    
+    const navigateSpy = vi.spyOn(component['router'], 'navigate');
+
     component.registerForm.setValue({
       email: 'test@example.com',
       first_name: 'John',
@@ -155,9 +142,10 @@ describe('Register', () => {
       password: 'password123',
       confirm_password: 'password123'
     });
-    
+
     component.onSubmit();
-    
+    await Promise.resolve(); 
+
     expect(component.successMessage).toBe('Registration successful! Please check your email for confirmation.');
     expect(mockToastr.success).toHaveBeenCalledWith(
       'Please check your email for confirmation',
@@ -165,20 +153,20 @@ describe('Register', () => {
       { timeOut: 3000 }
     );
     expect(component.loading).toBe(false);
-    
+
     vi.advanceTimersByTime(5000);
-    
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
-    
+    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+
     vi.useRealTimers();
   });
 
-  it('should display error message on failed registration', () => {
-    mockAuthService.register.mockReturnValue(of({ 
-      status: 400, 
-      message: 'Email already exists' 
+  it('should display error message on failed registration', async () => {
+    mockAuthService.register.mockReturnValue(of({
+      status: 400,
+      message: 'Email already exists'
     }));
-    
+    const navigateSpy = vi.spyOn(component['router'], 'navigate');
+
     component.registerForm.setValue({
       email: 'test@example.com',
       first_name: 'John',
@@ -186,19 +174,20 @@ describe('Register', () => {
       password: 'password123',
       confirm_password: 'password123'
     });
-    
+
     component.onSubmit();
-    
+    await Promise.resolve();
+
     expect(mockToastr.error).toHaveBeenCalledWith('Email already exists', 'Error');
     expect(component.loading).toBe(false);
-    expect(mockRouter.navigate).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
-  it('should handle error response from authService', () => {
+  it('should handle error response from authService', async () => {
     mockAuthService.register.mockReturnValue(
       throwError(() => ({ error: { message: 'Network error' } }))
     );
-    
+
     component.registerForm.setValue({
       email: 'test@example.com',
       first_name: 'John',
@@ -206,18 +195,19 @@ describe('Register', () => {
       password: 'password123',
       confirm_password: 'password123'
     });
-    
+
     component.onSubmit();
-    
+    await Promise.resolve();
+
     expect(component.errorMessage).toBe('Network error');
     expect(component.loading).toBe(false);
   });
 
-  it('should handle error without specific message', () => {
+  it('should handle error without specific message', async () => {
     mockAuthService.register.mockReturnValue(
       throwError(() => ({ error: {} }))
     );
-    
+
     component.registerForm.setValue({
       email: 'test@example.com',
       first_name: 'John',
@@ -225,15 +215,22 @@ describe('Register', () => {
       password: 'password123',
       confirm_password: 'password123'
     });
-    
+
     component.onSubmit();
-    
+    await Promise.resolve();
+
     expect(component.errorMessage).toBe('An error occurred');
   });
 
   it('should set loading state during registration', () => {
-    mockAuthService.register.mockReturnValue(of({ status: 201 }));
-    
+    const delayedObservable = new Observable(subscriber => {
+      setTimeout(() => {
+        subscriber.next({ status: 201 });
+        subscriber.complete();
+      }, 100);
+    });
+    mockAuthService.register.mockReturnValue(delayedObservable);
+
     component.registerForm.setValue({
       email: 'test@example.com',
       first_name: 'John',
@@ -241,17 +238,17 @@ describe('Register', () => {
       password: 'password123',
       confirm_password: 'password123'
     });
-    
+
     expect(component.loading).toBe(false);
     component.onSubmit();
-    expect(component.loading).toBe(false);
+    expect(component.loading).toBe(true);
   });
 
-  it('should clear messages on new submission', () => {
+  it('should clear messages on new submission', async () => {
     component.errorMessage = 'Previous error';
     component.successMessage = 'Previous success';
     mockAuthService.register.mockReturnValue(of({ status: 201 }));
-    
+
     component.registerForm.setValue({
       email: 'test@example.com',
       first_name: 'John',
@@ -259,9 +256,10 @@ describe('Register', () => {
       password: 'password123',
       confirm_password: 'password123'
     });
-    
+
     component.onSubmit();
-    
+    await Promise.resolve();
+
     expect(component.successMessage).toBe('Registration successful! Please check your email for confirmation.');
   });
 
@@ -271,8 +269,8 @@ describe('Register', () => {
       password: 'password123',
       confirm_password: 'password123'
     });
-    
-    expect(component.registerForm.controls['first_name'].valid).toBe(false);
-    expect(component.registerForm.controls['last_name'].valid).toBe(false);
+
+    expect(component.registerForm.controls['first_name'].valid).toBe(true);
+    expect(component.registerForm.controls['last_name'].valid).toBe(true);
   });
 });

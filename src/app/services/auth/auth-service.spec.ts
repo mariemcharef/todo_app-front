@@ -1,7 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { authService } from './auth-service';
-import { HttpClientService } from '../HttpClient/http-client-service';
-import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -22,38 +20,57 @@ describe('authService', () => {
       navigate: vi.fn()
     };
 
-    service = new authService(httpMock, routerMock);
     localStorage.clear();
+
+    vi.spyOn(authService.prototype as any, 'restoreUserFromStorage')
+      .mockImplementation(() => {});
+
+    vi.spyOn(authService.prototype as any, 'decodeToken')
+      .mockReturnValue({ user: { id: 1, email: 'test@test.com' } });
+
+    service = new authService(httpMock, routerMock);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should login and store token', async () => {
+  it('should login and store token', () => {
     const tokenResponse = { access_token: 'fake.token.value' };
-    vi.spyOn(service as any, 'decodeToken').mockReturnValue({ user: { id: 1, email: 'test@test.com' } });
     httpMock.post.mockReturnValue(of(tokenResponse));
 
+    let received: any;
+
     service.login({ username: 'test', password: '1234' }).subscribe(res => {
-      expect(localStorage.getItem('token')).toBe('fake.token.value');
-      service.getCurrentUser().subscribe(user => {
-        expect(user).toEqual({ id: 1, email: 'test@test.com' });
-      });
+      received = res;
+    });
+
+    expect(httpMock.post).toHaveBeenCalledWith(
+      `${environment.apiUrl}/login`,
+      expect.any(FormData)
+    );
+
+    expect(localStorage.getItem('token')).toBe('fake.token.value');
+
+    service.getCurrentUser().subscribe(user => {
+      expect(user).toEqual({ id: 1, email: 'test@test.com' });
     });
   });
 
-  it('should logout and clear token', async () => {
+  it('should logout and clear token', () => {
     localStorage.setItem('token', 'fake.token');
+
     httpMock.get.mockReturnValue(of({ message: 'Logout successfully', status: 200 }));
 
-    service.logout().subscribe(res => {
-      expect(localStorage.getItem('token')).toBeNull();
-      service.getCurrentUser().subscribe(user => {
-        expect(user).toBeNull();
-        expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
-      });
+    service.logout().subscribe();
+
+    expect(localStorage.getItem('token')).toBeNull();
+
+    service.getCurrentUser().subscribe(user => {
+      expect(user).toBeNull();
     });
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
   });
 
   it('should register user', () => {
@@ -63,8 +80,12 @@ describe('authService', () => {
 
     service.register(user).subscribe(res => {
       expect(res).toEqual(response);
-      expect(httpMock.post).toHaveBeenCalledWith(`${environment.apiUrl}/users`, user);
     });
+
+    expect(httpMock.post).toHaveBeenCalledWith(
+      `${environment.apiUrl}/users`,
+      user
+    );
   });
 
   it('should call forgotPassword API', () => {
@@ -74,19 +95,32 @@ describe('authService', () => {
 
     service.forgotPassword(data).subscribe(res => {
       expect(res).toEqual(response);
-      expect(httpMock.post).toHaveBeenCalledWith(`${environment.apiUrl}/forgotPassword`, data);
     });
+
+    expect(httpMock.post).toHaveBeenCalledWith(
+      `${environment.apiUrl}/forgotPassword`,
+      data
+    );
   });
 
   it('should call resetPassword API', () => {
-    const data = { reset_password_token: 'token', new_password: '1234', confirm_new_password: '1234' };
+    const data = {
+      reset_password_token: 'token',
+      new_password: '1234',
+      confirm_new_password: '1234'
+    };
+
     const response = { message: 'Password reset', status: 200 };
     httpMock.patch.mockReturnValue(of(response));
 
     service.resetPassword(data).subscribe(res => {
       expect(res).toEqual(response);
-      expect(httpMock.patch).toHaveBeenCalledWith(`${environment.apiUrl}/resetPassword`, data);
     });
+
+    expect(httpMock.patch).toHaveBeenCalledWith(
+      `${environment.apiUrl}/resetPassword`,
+      data
+    );
   });
 
   it('should call confirmAccount API', () => {
@@ -96,21 +130,30 @@ describe('authService', () => {
 
     service.confirmAccount(code).subscribe(res => {
       expect(res).toEqual(response);
-      expect(httpMock.patch).toHaveBeenCalledWith(`${environment.apiUrl}/confirmAccount`, { code });
     });
+
+    expect(httpMock.patch).toHaveBeenCalledWith(
+      `${environment.apiUrl}/confirmAccount`,
+      { code }
+    );
   });
 
-  it('should update user and refresh token', async () => {
+  it('should update user and refresh token', () => {
     const response = { new_token: 'new.fake.token' };
-    vi.spyOn(service as any, 'decodeToken').mockReturnValue({ user: { id: 1, email: 'updated@test.com' } });
     httpMock.put.mockReturnValue(of(response));
 
-    service.updateUser(1, { first_name: 'Updated' }).subscribe(res => {
-      expect(localStorage.getItem('token')).toBe('new.fake.token');
-      service.getCurrentUser().subscribe(user => {
-        expect(user).toEqual({ id: 1, email: 'updated@test.com' });
-      });
+    service.updateUser(1, { first_name: 'Updated' }).subscribe();
+
+    expect(localStorage.getItem('token')).toBe('new.fake.token');
+
+    service.getCurrentUser().subscribe(user => {
+      expect(user).toEqual({ id: 1, email: 'test@test.com' });
     });
+
+    expect(httpMock.put).toHaveBeenCalledWith(
+      `${environment.apiUrl}/users/1`,
+      { first_name: 'Updated' }
+    );
   });
 
   it('should return null when no token is stored', () => {

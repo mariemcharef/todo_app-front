@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { authService } from '../../services/auth/auth-service';
 import { environment } from '../../../environments/environment';
 import { CommonModule } from '@angular/common';
-
+import { authService } from '../../services/auth/auth-service';
 @Component({
   selector: 'app-nav',
   standalone: true,

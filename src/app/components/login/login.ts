@@ -38,10 +38,11 @@ export class Login {
       next: (response) => {
         if (response.status === 200) {
           this.router.navigate(['/tasks']);
+          this.loading = false;
         } else {
           this.errorMessage = response.message || 'Login failed';
+          this.loading = false;
         }
-        this.loading = false;
       },
       error: (error) => {
         this.errorMessage = error.error?.message || 'An error occurred';
@@ -49,7 +50,6 @@ export class Login {
       }
     });
   }
-
 
   loginWithGoogle() {
     window.location.href = `${environment.apiUrl}/login/google`;

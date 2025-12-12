@@ -51,29 +51,32 @@ export class TaskList implements OnInit, OnDestroy {
 
 loadTasks(): void {
   this.loading = true;
-  this.taskService.getTasks({ page_number: this.currentPage, page_size: this.pageSize })
-    .pipe(takeUntil(this.destroy$), finalize(() => this.loading = false))
+
+  this.taskService
+    .getTasks({ page_number: this.currentPage, page_size: this.pageSize })
+    .pipe(
+      takeUntil(this.destroy$),
+      finalize(() => {
+        this.loading = false;
+        this.cd.detectChanges();
+      })
+    )
     .subscribe({
       next: (res) => {
-        this.ngZone.run(() => {  
-          if (res.status === 200) {
-            this.tasks = res.list || [];
-            this.totalPages = res.total_pages || 0;
-            this.totalRecords = res.total_records || 0;
-          } else {
-            this.errorMessage = res.message || 'Failed to load tasks';
-          }
-          this.cd.detectChanges(); 
-        });
+        if (res.status === 200) {
+          this.tasks = res.list || [];
+          this.totalPages = res.total_pages || 0;
+          this.totalRecords = res.total_records || 0;
+        } else {
+          this.errorMessage = res.message || 'Failed to load tasks';
+        }
       },
       error: (error) => {
-        this.ngZone.run(() => {
-          this.errorMessage = this.extractErrorMessage(error);
-          this.cd.detectChanges();
-        });
+        this.errorMessage = this.extractErrorMessage(error);
       }
     });
 }
+
 
   loadStats(): void {
     if (this.statsLoading) return;

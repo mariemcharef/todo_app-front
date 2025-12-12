@@ -47,23 +47,24 @@ export class TaskForm implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.task) {
-      this.isEditMode = true;
-      
-      const formValue = { ...this.task };
-      if (formValue.due_date) {
-        const date = new Date(formValue.due_date);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        formValue.due_date = `${year}-${month}-${day}T${hours}:${minutes}`;
-      }
-      
-      this.taskForm.patchValue(formValue);
+  if (this.task) {
+    this.isEditMode = true;
+    
+    const formValue = { ...this.task };
+    if (formValue.due_date) {
+      const date = new Date(formValue.due_date);
+
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      formValue.due_date = `${year}-${month}-${day}T${hours}:${minutes}`;
     }
+    
+    this.taskForm.patchValue(formValue);
   }
+}
 
   onSubmit(): void {
     if (this.taskForm.invalid) {
@@ -110,13 +111,16 @@ export class TaskForm implements OnInit {
     this.close.emit();
   }
 
-  get minDateTime(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  }
+ get minDateTime(): string {
+  const now = new Date();
+  now.setSeconds(0, 0);
+  
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
 }

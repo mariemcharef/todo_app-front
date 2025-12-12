@@ -1,73 +1,76 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Nav } from './nav';
-import { Router, ActivatedRoute } from '@angular/router';
 import { authService } from '../../services/auth/auth-service';
+import { Router, provideRouter } from '@angular/router';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
-import { vi } from 'vitest';
 
-// Mock authService
 class MockAuthService {
-  isAuthenticated = vi.fn(() => true);
-  logout = vi.fn(() => of({}));
+  isAuthenticated = vi.fn();
+  logout = vi.fn().mockReturnValue(of({})); 
 }
-
-// Mock Router
-const mockRouter = {
-  navigate: vi.fn()
-};
-
-// Mock ActivatedRoute
-const mockActivatedRoute = {
-  snapshot: {},
-  params: of({})
-};
 
 describe('Nav Component', () => {
   let component: Nav;
   let fixture: ComponentFixture<Nav>;
-  let mockAuthService: MockAuthService;
+  let mockAuth: MockAuthService;
+  let router: Router;
 
   beforeEach(async () => {
-    mockAuthService = new MockAuthService();
+    mockAuth = new MockAuthService();
 
     await TestBed.configureTestingModule({
-      imports: [Nav],
+      imports: [Nav, CommonModule],
       providers: [
-        { provide: Router, useValue: mockRouter },
-        { provide: authService, useValue: mockAuthService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+        provideRouter([]),
+        { provide: authService, useValue: mockAuth }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Nav);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-    await fixture.whenStable();
+    router = TestBed.inject(Router);
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should logout and navigate to /login', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    
     component.logout();
-    expect(mockAuthService.logout).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+    
+    expect(mockAuth.logout).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 
-  it('should show logout button if authenticated', () => {
-    mockAuthService.isAuthenticated = vi.fn(() => true);
+  it('should show logout button if authenticated', async () => {
+    mockAuth.isAuthenticated.mockReturnValue(true);
+    
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    const logoutButton = compiled.querySelector('.btn-logout');
+    await fixture.whenStable();
+    
+    const compiled = fixture.nativeElement;
+    const logoutButton = compiled.querySelector('[data-testid="logout-button"]') 
+      || compiled.querySelector('button'); 
+    
+    expect(mockAuth.isAuthenticated).toHaveBeenCalled();
     expect(logoutButton).toBeTruthy();
   });
 
-  it('should not show logout button if not authenticated', () => {
-    mockAuthService.isAuthenticated = vi.fn(() => false);
+  it('should not show logout button if not authenticated', async () => {
+    mockAuth.isAuthenticated.mockReturnValue(false);
+
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    const logoutButton = compiled.querySelector('.btn-logout');
-    expect(logoutButton).toBeNull();
+    await fixture.whenStable();
+    
+    const compiled = fixture.nativeElement;
+    const logoutButton = compiled.querySelector('[data-testid="logout-button"]');
+    
+    expect(mockAuth.isAuthenticated).toHaveBeenCalled();
+    expect(logoutButton).toBeFalsy();
   });
 });

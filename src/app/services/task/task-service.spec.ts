@@ -345,40 +345,6 @@ describe('TaskService', () => {
     });
   });
 
-  describe('batchUpdateTasks', () => {
-    it('should update multiple tasks', async () => {
-      const updates = [
-        { id: 1, data: { title: 'Updated 1' } },
-        { id: 2, data: { title: 'Updated 2' } }
-      ];
-
-      const mockResponse1: Task & BaseResponse = {
-        ...mockTask,
-        id: 1,
-        title: 'Updated 1',
-        status: 200,
-        message: 'Updated'
-      };
-
-      const mockResponse2: Task & BaseResponse = {
-        ...mockTask,
-        id: 2,
-        title: 'Updated 2',
-        status: 200,
-        message: 'Updated'
-      };
-
-      service.batchUpdateTasks(updates).subscribe(responses => {
-        expect(responses.length).toBe(2);
-      });
-
-      const req1 = httpMock.expectOne(`${apiUrl}/1`);
-      req1.flush(mockResponse1);
-
-      const req2 = httpMock.expectOne(`${apiUrl}/2`);
-      req2.flush(mockResponse2);
-    });
-  });
 });
 
 function fail(arg0: string): void {

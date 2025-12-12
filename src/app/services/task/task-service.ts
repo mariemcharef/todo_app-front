@@ -52,7 +52,6 @@ export class TaskService {
 
   private handleError(operation: string) {
     return (error: any): Observable<never> => {
-      console.error(`${operation} failed:`, error);
       
       const errorMessage = error?.error?.message || error?.message || `${operation} failed`;
       
@@ -62,6 +61,7 @@ export class TaskService {
       }));
     };
   }
+  
   getTasks(filters: TaskFilters = {}): Observable<PagedResponse<Task>> {
     const params = this.buildParams(filters);
     
@@ -183,18 +183,5 @@ export class TaskService {
     this.tasksCache.clear();
   }
 
-  batchUpdateTasks(updates: Array<{ id: number; data: Partial<TaskCreate> }>): Observable<BaseResponse[]> {
-    const requests = updates.map(update => this.updateTask(update.id, update.data));
-    
-    return new Observable(observer => {
-      Promise.all(requests.map(req => req.toPromise()))
-        .then(results => {
-          observer.next(results as BaseResponse[]);
-          observer.complete();
-        })
-        .catch(error => {
-          observer.error(error);
-        });
-    });
-  }
+  
 }

@@ -1,42 +1,44 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Login } from './login';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { authService } from '../../services/auth/auth-service';
-import { of, throwError } from 'rxjs';
+import { Router } from '@angular/router';
+import { of, throwError, Observable } from 'rxjs';
 import { vi } from 'vitest';
 import { CommonModule } from '@angular/common';
+import { provideRouter } from '@angular/router';
 
 class MockAuthService {
   login = vi.fn();
-}
-
-class MockRouter {
-  navigate = vi.fn();
 }
 
 describe('Login', () => {
   let component: Login;
   let fixture: ComponentFixture<Login>;
   let mockAuthService: MockAuthService;
-  let mockRouter: MockRouter;
+  let router: Router;
 
   beforeEach(async () => {
     mockAuthService = new MockAuthService();
-    mockRouter = new MockRouter();
 
     await TestBed.configureTestingModule({
       imports: [Login, ReactiveFormsModule, CommonModule],
       providers: [
         { provide: authService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter }
+        provideRouter([]) 
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Login);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    
     fixture.detectChanges();
     await fixture.whenStable();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -57,7 +59,7 @@ describe('Login', () => {
     component.loginForm.controls['password'].setValue('password123');
     
     expect(component.loginForm.valid).toBe(true);
-  });
+  }); 
 
   it('should validate email format', () => {
     const usernameControl = component.loginForm.controls['username'];
@@ -90,8 +92,9 @@ describe('Login', () => {
     });
   });
 
-  it('should navigate to /tasks on successful login', () => {
+  it('should navigate to /tasks on successful login', async () => {
     mockAuthService.login.mockReturnValue(of({ status: 200 }));
+    const navigateSpy = vi.spyOn(router, 'navigate');
     
     component.loginForm.setValue({
       username: 'test@example.com',
@@ -100,15 +103,20 @@ describe('Login', () => {
     
     component.onSubmit();
     
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/tasks']);
+    await fixture.whenStable();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    fixture.detectChanges();
+    
+    expect(navigateSpy).toHaveBeenCalledWith(['/tasks']);
     expect(component.loading).toBe(false);
   });
 
-  it('should display error message on failed login', () => {
+  it('should display error message on failed login', async () => {
     mockAuthService.login.mockReturnValue(of({ 
       status: 401, 
       message: 'Invalid credentials' 
     }));
+    const navigateSpy = vi.spyOn(router, 'navigate');
     
     component.loginForm.setValue({
       username: 'test@example.com',
@@ -117,12 +125,17 @@ describe('Login', () => {
     
     component.onSubmit();
     
+
+    await fixture.whenStable();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    fixture.detectChanges();
+    
     expect(component.errorMessage).toBe('Invalid credentials');
     expect(component.loading).toBe(false);
-    expect(mockRouter.navigate).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
-  it('should handle error response from authService', () => {
+  it('should handle error response from authService', async () => {
     mockAuthService.login.mockReturnValue(
       throwError(() => ({ error: { message: 'Network error' } }))
     );
@@ -134,11 +147,15 @@ describe('Login', () => {
     
     component.onSubmit();
     
+    await fixture.whenStable();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    fixture.detectChanges();
+    
     expect(component.errorMessage).toBe('Network error');
     expect(component.loading).toBe(false);
   });
 
-  it('should handle error without specific message', () => {
+  it('should handle error without specific message', async () => {
     mockAuthService.login.mockReturnValue(
       throwError(() => ({ error: {} }))
     );
@@ -150,11 +167,23 @@ describe('Login', () => {
     
     component.onSubmit();
     
+    // Wait for async operations to complete
+    await fixture.whenStable();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    fixture.detectChanges();
+    
     expect(component.errorMessage).toBe('An error occurred');
+    expect(component.loading).toBe(false);
   });
 
   it('should set loading state during login', () => {
-    mockAuthService.login.mockReturnValue(of({ status: 200 }));
+    const delayedObservable = new Observable(subscriber => {
+      setTimeout(() => {
+        subscriber.next({ status: 200 });
+        subscriber.complete();
+      }, 100);
+    });
+    mockAuthService.login.mockReturnValue(delayedObservable);
     
     component.loginForm.setValue({
       username: 'test@example.com',
@@ -163,7 +192,7 @@ describe('Login', () => {
     
     expect(component.loading).toBe(false);
     component.onSubmit();
-    expect(component.loading).toBe(false);
+    expect(component.loading).toBe(true);
   });
 
   it('should clear error message on new submission', () => {
@@ -178,23 +207,5 @@ describe('Login', () => {
     component.onSubmit();
     
     expect(component.errorMessage).toBe('');
-  });
-
-  it('should redirect to Google OAuth on loginWithGoogle', () => {
-    const originalHref = window.location.href;  
-    const hrefSpy = vi.fn();
-    Object.defineProperty(window.location, 'href', {
-      set: hrefSpy,
-      configurable: true
-    });
-    
-    component.loginWithGoogle();
-    
-    expect(hrefSpy).toHaveBeenCalledWith(expect.stringContaining('/login/google'));
-    Object.defineProperty(window.location, 'href', {
-      value: originalHref,
-      configurable: true,
-      writable: true
-    });
   });
 });

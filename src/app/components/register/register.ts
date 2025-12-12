@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { authService } from '../../services/auth/auth-service';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
-
+import { authService } from '../../services/auth/auth-service';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -57,15 +56,15 @@ export class Register {
             'Registration Successful!',
             { timeOut: 3000 }
           );
+          this.loading = false;
           setTimeout(() => this.router.navigate(['/login']), 5000);
-
-        }else {
+        } else {
           this.toastr.error(
             response.message || 'Registration failed',
             'Error'
           );
+          this.loading = false;
         }
-        this.loading = false;
       },
       error: (error) => {
         this.errorMessage = error.error?.message || 'An error occurred';

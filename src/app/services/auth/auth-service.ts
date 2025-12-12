@@ -21,10 +21,10 @@ export class authService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClientService, private router: Router) {
-    this.loadStoredUser();
+    this.restoreUserFromStorage();
   }
 
-  private loadStoredUser(): void {
+  private restoreUserFromStorage(): void {
     const token = this.getToken();
     if (token) {
       try {

@@ -60,7 +60,7 @@ describe('Account Component', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  //Ensures the form is populated with the user from currentUser$.
+  
   it('should load user data and populate the form', () => {
     expect(component.form.value).toEqual({
       email: 'john.doe@example.com',
