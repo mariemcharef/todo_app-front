@@ -29,26 +29,30 @@ export class Login {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) return;
+    this.loginForm.markAllAsTouched();
+    if (this.loginForm.invalid){
+       return;
+    }
+
 
     this.loading = true;
     this.errorMessage = '';
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: (response) => {
-        if (response.status === 200) {
-          this.router.navigate(['/tasks']);
-          this.loading = false;
-        } else {
-          this.errorMessage = response.message || 'Login failed';
-          this.loading = false;
-        }
-      },
-      error: (error) => {
-        this.errorMessage = error.error?.message || 'An error occurred';
+    next: (response) => {
+      if (response.access_token) { 
+        this.router.navigate(['/tasks']);
+        this.loading = false;
+      } else {
+        this.errorMessage = response.message || 'Login failed';
         this.loading = false;
       }
-    });
+    },
+    error: (error) => {
+      this.errorMessage = error.error?.message || 'An error occurred';
+      this.loading = false;
+    }
+  });
   }
 
   loginWithGoogle() {
