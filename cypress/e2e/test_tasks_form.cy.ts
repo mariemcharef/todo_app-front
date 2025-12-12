@@ -3,7 +3,6 @@ describe('Task Form E2E Tests', () => {
   const apiUrl = 'http://localhost:8001';
 
   beforeEach(() => {
-    // Login first
     cy.visit(`${baseUrl}/login`);
     cy.get('input#username').type('m@yopmail.com');
     cy.get('input#password').type('123456');
@@ -405,8 +404,6 @@ describe('Task Form E2E Tests', () => {
 
       cy.get('#title').type('Slow Task');
       cy.get('button[type="submit"]').click();
-
-      // Button should be disabled during request
       cy.get('button[type="submit"]').should('be.disabled');
     });
   });
