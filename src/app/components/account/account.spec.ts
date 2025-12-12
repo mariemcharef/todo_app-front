@@ -31,6 +31,11 @@ class MockAuthService {
     of({ message: 'Updated', new_token: 'new.token.value' })
   );
 }
+Object.defineProperty(window, 'alert', {
+  value: vi.fn(),
+  writable: true,
+});
+
 
 describe('Account Component', () => {
   let component: Account;
@@ -92,6 +97,7 @@ describe('Account Component', () => {
 
   it('should handle update error', () => {
     mockAuthService.updateUser = vi.fn(() => throwError(() => new Error('Update failed')));
+
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
     component.update();
     expect(alertSpy).toHaveBeenCalledWith('Error updating user');

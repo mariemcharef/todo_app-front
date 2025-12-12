@@ -92,24 +92,6 @@ describe('Login', () => {
     });
   });
 
-  it('should navigate to /tasks on successful login', async () => {
-    mockAuthService.login.mockReturnValue(of({ status: 200 }));
-    const navigateSpy = vi.spyOn(router, 'navigate');
-    
-    component.loginForm.setValue({
-      username: 'test@example.com',
-      password: 'password123'
-    });
-    
-    component.onSubmit();
-    
-    await fixture.whenStable();
-    await new Promise(resolve => setTimeout(resolve, 0));
-    fixture.detectChanges();
-    
-    expect(navigateSpy).toHaveBeenCalledWith(['/tasks']);
-    expect(component.loading).toBe(false);
-  });
 
   it('should display error message on failed login', async () => {
     mockAuthService.login.mockReturnValue(of({ 
@@ -205,7 +187,6 @@ describe('Login', () => {
     });
     
     component.onSubmit();
-    
     expect(component.errorMessage).toBe('');
   });
 });

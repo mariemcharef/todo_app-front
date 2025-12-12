@@ -1,0 +1,731 @@
+{
+  "stats": {
+    "suites": 11,
+    "tests": 22,
+    "passes": 16,
+    "pending": 0,
+    "failures": 6,
+    "start": "2025-12-12T20:18:05.123Z",
+    "end": "2025-12-12T20:18:31.904Z",
+    "duration": 26781,
+    "testsRegistered": 22,
+    "passPercent": 72.72727272727273,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "81842aae-64f4-446e-9afb-d73950675774",
+      "title": "",
+      "fullFile": "cypress/e2e/test_login.cy.ts",
+      "file": "cypress/e2e/test_login.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "a2dcc7e5-0447-4d28-a979-35086f604937",
+          "title": "Login E2E tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "70b447a4-85c3-4aa1-aae2-c6207ea9fe82",
+              "title": "Form Validation",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "shows validation error for empty email field",
+                  "fullTitle": "Login E2E tests Form Validation shows validation error for empty email field",
+                  "timedOut": null,
+                  "duration": 1199,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#password').type('testpassword123');\ncy.get('input#username').focus().blur();\ncy.get('input#username').should('have.class', 'ng-invalid');",
+                  "err": {},
+                  "uuid": "196f7f9a-8912-4f6f-955d-0712ece4aa28",
+                  "parentUUID": "70b447a4-85c3-4aa1-aae2-c6207ea9fe82",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "shows validation error for invalid email format",
+                  "fullTitle": "Login E2E tests Form Validation shows validation error for invalid email format",
+                  "timedOut": null,
+                  "duration": 479,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').type('invalidemail');\ncy.get('input#username').blur();\ncy.get('input#username').should('have.class', 'ng-invalid');",
+                  "err": {},
+                  "uuid": "b7d6c277-415f-43b2-bb3f-678fdbecd714",
+                  "parentUUID": "70b447a4-85c3-4aa1-aae2-c6207ea9fe82",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "shows validation error for empty password field",
+                  "fullTitle": "Login E2E tests Form Validation shows validation error for empty password field",
+                  "timedOut": null,
+                  "duration": 577,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').type('test@example.com');\ncy.get('input#password').focus().blur();\ncy.get('input#password').should('have.class', 'ng-invalid');",
+                  "err": {},
+                  "uuid": "f840afd9-5825-4ee7-b02d-9bc7f319c892",
+                  "parentUUID": "70b447a4-85c3-4aa1-aae2-c6207ea9fe82",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "enables submit when form is valid",
+                  "fullTitle": "Login E2E tests Form Validation enables submit when form is valid",
+                  "timedOut": null,
+                  "duration": 742,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').type('test@example.com');\ncy.get('input#password').type('password123');\ncy.get('button[type=\"submit\"]').should('not.be.disabled');",
+                  "err": {},
+                  "uuid": "bb10c9d8-489c-4fb6-bb31-c550f2c87188",
+                  "parentUUID": "70b447a4-85c3-4aa1-aae2-c6207ea9fe82",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "196f7f9a-8912-4f6f-955d-0712ece4aa28",
+                "b7d6c277-415f-43b2-bb3f-678fdbecd714",
+                "f840afd9-5825-4ee7-b02d-9bc7f319c892",
+                "bb10c9d8-489c-4fb6-bb31-c550f2c87188"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 2997,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "1279b86e-e5fd-4ceb-8254-bc3719532545",
+              "title": "Login Functionality",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "logs in successfully with valid credentials",
+                  "fullTitle": "Login E2E tests Login Functionality logs in successfully with valid credentials",
+                  "timedOut": null,
+                  "duration": 810,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.intercept('POST', `${apiUrl}/login`).as('loginRequest');\ncy.get('input#username').type('m@yopmail.com');\ncy.get('input#password').type('123456');\ncy.get('form').submit();\ncy.wait('@loginRequest').its('response.statusCode').should('eq', 200);\ncy.url({ timeout: 10000 }).should('include', '/tasks');",
+                  "err": {},
+                  "uuid": "5c5478c2-56fa-4bdc-a60f-22296b0fe620",
+                  "parentUUID": "1279b86e-e5fd-4ceb-8254-bc3719532545",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "displays error for invalid credentials",
+                  "fullTitle": "Login E2E tests Login Functionality displays error for invalid credentials",
+                  "timedOut": null,
+                  "duration": 4928,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.intercept('POST', `${apiUrl}/login`).as('loginRequest');\ncy.get('input#username').type('wrong@example.com');\ncy.get('input#password').type('wrongpassword');\ncy.get('form').submit();\ncy.wait('@loginRequest');\ncy.get('body').should('contain', /login failed|invalid credentials|error/i);",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 4000ms: expected '<body>' to contain /login failed|invalid credentials|error/i",
+                    "estack": "AssertionError: Timed out retrying after 4000ms: expected '<body>' to contain /login failed|invalid credentials|error/i\n    at Context.eval (webpack://task-manager/./cypress/e2e/test_login.cy.ts:62:21)",
+                    "diff": null
+                  },
+                  "uuid": "9b72a85f-2f1c-4606-9adc-9f9147ceb5c3",
+                  "parentUUID": "1279b86e-e5fd-4ceb-8254-bc3719532545",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "handles server error gracefully",
+                  "fullTitle": "Login E2E tests Login Functionality handles server error gracefully",
+                  "timedOut": null,
+                  "duration": 755,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.intercept('POST', `${apiUrl}/login`).as('loginRequest');\ncy.get('input#username').type('test@example.com');\ncy.get('input#password').type('password123');\ncy.get('form').submit();\ncy.wait('@loginRequest');\ncy.get('body').then(($body) => {\n    if ($body.text().includes('error') || $body.text().includes('failed')) {\n        cy.contains(/error|failed/i).should('be.visible');\n    }\n});",
+                  "err": {},
+                  "uuid": "63254c34-08b0-4ec6-810e-6d4e9c2ac248",
+                  "parentUUID": "1279b86e-e5fd-4ceb-8254-bc3719532545",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "5c5478c2-56fa-4bdc-a60f-22296b0fe620",
+                "63254c34-08b0-4ec6-810e-6d4e9c2ac248"
+              ],
+              "failures": [
+                "9b72a85f-2f1c-4606-9adc-9f9147ceb5c3"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 6493,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "82a340bc-cd65-4979-8445-2d56326d9b76",
+              "title": "Login Functionality - Alternative Without Wait",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "logs in successfully and redirects to tasks page",
+                  "fullTitle": "Login E2E tests Login Functionality - Alternative Without Wait logs in successfully and redirects to tasks page",
+                  "timedOut": null,
+                  "duration": 788,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').type('m@yopmail.com');\ncy.get('input#password').type('123456');\ncy.get('form').submit();\ncy.url({ timeout: 10000 }).should('include', '/tasks');\ncy.contains(/tasks/i, { timeout: 10000 }).should('be.visible');",
+                  "err": {},
+                  "uuid": "c29994c5-9eae-4f60-8661-ccdc13aef71f",
+                  "parentUUID": "82a340bc-cd65-4979-8445-2d56326d9b76",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "displays error for invalid credentials",
+                  "fullTitle": "Login E2E tests Login Functionality - Alternative Without Wait displays error for invalid credentials",
+                  "timedOut": null,
+                  "duration": 220,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').type('invalid@example.com');\ncy.get('input#password').type('wrongpassword');\ncy.get('form').submit();\ncy.get('body', { timeout: 10000 }).should('contain.text', 'error')\n    .or('contain.text', 'failed')\n    .or('contain.text', 'invalid');",
+                  "err": {
+                    "message": "TypeError: cy.get(...).should(...).or is not a function",
+                    "estack": "TypeError: cy.get(...).should(...).or is not a function\n    at Context.eval (webpack://task-manager/./cypress/e2e/test_login.cy.ts:99:9)\n    at runnable.fn (http://localhost:4200/__cypress/runner/cypress_runner.js:146091:19)\n    at callFn (http://localhost:4200/__cypress/runner/cypress_runner.js:165185:21)\n    at Runnable.run (http://localhost:4200/__cypress/runner/cypress_runner.js:165172:7)\n    at <unknown> (http://localhost:4200/__cypress/runner/cypress_runner.js:171267:30)\n    at PassThroughHandlerContext.finallyHandler (http://localhost:4200/__cypress/runner/cypress_runner.js:4042:23)\n    at PassThroughHandlerContext.tryCatcher (http://localhost:4200/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise._settlePromiseFromHandler (http://localhost:4200/__cypress/runner/cypress_runner.js:1489:31)\n    at Promise._settlePromise (http://localhost:4200/__cypress/runner/cypress_runner.js:1546:18)",
+                    "diff": null
+                  },
+                  "uuid": "af7d1745-46ac-4f11-be8b-41f08409f807",
+                  "parentUUID": "82a340bc-cd65-4979-8445-2d56326d9b76",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "stays on login page after failed login",
+                  "fullTitle": "Login E2E tests Login Functionality - Alternative Without Wait stays on login page after failed login",
+                  "timedOut": null,
+                  "duration": 829,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').type('wrong@example.com');\ncy.get('input#password').type('wrongpassword');\ncy.get('form').submit();\ncy.url({ timeout: 5000 }).should('include', '/login');",
+                  "err": {},
+                  "uuid": "cbecf591-6e08-4f3b-a0bc-94f28effc25f",
+                  "parentUUID": "82a340bc-cd65-4979-8445-2d56326d9b76",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "c29994c5-9eae-4f60-8661-ccdc13aef71f",
+                "cbecf591-6e08-4f3b-a0bc-94f28effc25f"
+              ],
+              "failures": [
+                "af7d1745-46ac-4f11-be8b-41f08409f807"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 1837,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "0eb18132-bb7d-4f0f-b9f0-a8d30151838a",
+              "title": "Loading State",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "disables submit button during login",
+                  "fullTitle": "Login E2E tests Loading State disables submit button during login",
+                  "timedOut": null,
+                  "duration": 740,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.intercept('POST', `${apiUrl}/login`, (req) => {\n    req.continue((res) => {\n        res.delay = 1000;\n    });\n}).as('loginRequest');\ncy.get('input#username').type('m@yopmail.com');\ncy.get('input#password').type('123456');\nconst submitButton = cy.get('button[type=\"submit\"]');\nsubmitButton.click();\nsubmitButton.should('be.disabled');",
+                  "err": {},
+                  "uuid": "a9d6686f-9a8a-4e59-a499-fbd5e029fa5d",
+                  "parentUUID": "0eb18132-bb7d-4f0f-b9f0-a8d30151838a",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "a9d6686f-9a8a-4e59-a499-fbd5e029fa5d"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 740,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "8fc44e30-d5bd-44c8-9b75-28a4a4048b2a",
+              "title": "Google OAuth",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "has Google login button",
+                  "fullTitle": "Login E2E tests Google OAuth has Google login button",
+                  "timedOut": null,
+                  "duration": 142,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('button').contains(/google/i).should('exist');",
+                  "err": {},
+                  "uuid": "67af893c-3034-4d37-a937-5c1122e67dd5",
+                  "parentUUID": "8fc44e30-d5bd-44c8-9b75-28a4a4048b2a",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Google login button triggers redirect",
+                  "fullTitle": "Login E2E tests Google OAuth Google login button triggers redirect",
+                  "timedOut": null,
+                  "duration": 120,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('button').contains(/google/i).should('be.visible').and('not.be.disabled');",
+                  "err": {},
+                  "uuid": "8b0e932e-5abd-46a1-9dbc-ac6dcd1caf8e",
+                  "parentUUID": "8fc44e30-d5bd-44c8-9b75-28a4a4048b2a",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "67af893c-3034-4d37-a937-5c1122e67dd5",
+                "8b0e932e-5abd-46a1-9dbc-ac6dcd1caf8e"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 262,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "379f01c1-4c84-4a25-8969-032cf2ac6520",
+              "title": "Navigation",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "can navigate to registration page if link exists",
+                  "fullTitle": "Login E2E tests Navigation can navigate to registration page if link exists",
+                  "timedOut": null,
+                  "duration": 141,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('body').then(($body) => {\n    if ($body.find('a[href*=\"/register\"]').length > 0) {\n        cy.get('a[href*=\"/register\"]').should('be.visible');\n    }\n});",
+                  "err": {},
+                  "uuid": "c56c581f-f69e-4706-8bb1-de0cf337a086",
+                  "parentUUID": "379f01c1-4c84-4a25-8969-032cf2ac6520",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "can navigate to forgot password page if link exists",
+                  "fullTitle": "Login E2E tests Navigation can navigate to forgot password page if link exists",
+                  "timedOut": null,
+                  "duration": 116,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('body').then(($body) => {\n    if ($body.find('a[href*=\"/forgot\"]').length > 0) {\n        cy.get('a[href*=\"/forgot\"]').should('be.visible');\n    }\n});",
+                  "err": {},
+                  "uuid": "62ca1331-36b9-4133-b8b3-12eb80641c7b",
+                  "parentUUID": "379f01c1-4c84-4a25-8969-032cf2ac6520",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "c56c581f-f69e-4706-8bb1-de0cf337a086",
+                "62ca1331-36b9-4133-b8b3-12eb80641c7b"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 257,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "6da330c1-5493-4147-9fc8-99b49018fa85",
+              "title": "Form Behavior",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "clears password on failed login attempt",
+                  "fullTitle": "Login E2E tests Form Behavior clears password on failed login attempt",
+                  "timedOut": null,
+                  "duration": 2842,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').type('wrong@example.com');\ncy.get('input#password').type('wrongpassword');\ncy.get('form').submit();\ncy.wait(2000);\ncy.get('input#username').should('have.value', 'wrong@example.com');",
+                  "err": {},
+                  "uuid": "8c09824e-ac0f-41ee-abfe-d5a571a5a463",
+                  "parentUUID": "6da330c1-5493-4147-9fc8-99b49018fa85",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "allows retry after failed login",
+                  "fullTitle": "Login E2E tests Form Behavior allows retry after failed login",
+                  "timedOut": null,
+                  "duration": 3545,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').type('wrong@example.com');\ncy.get('input#password').type('wrongpassword');\ncy.get('form').submit();\ncy.wait(2000);\ncy.get('input#username').clear().type('m@yopmail.com');\ncy.get('input#password').clear().type('123456');\ncy.get('form').submit();\ncy.url({ timeout: 10000 }).should('include', '/tasks');",
+                  "err": {},
+                  "uuid": "c461ebe1-7e00-4a29-9686-44f47f8ee4dc",
+                  "parentUUID": "6da330c1-5493-4147-9fc8-99b49018fa85",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "8c09824e-ac0f-41ee-abfe-d5a571a5a463",
+                "c461ebe1-7e00-4a29-9686-44f47f8ee4dc"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 6387,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "cbb5cbde-4abd-479d-8827-886c1b75cbb0",
+              "title": "Security",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "password field masks input",
+                  "fullTitle": "Login E2E tests Security password field masks input",
+                  "timedOut": null,
+                  "duration": 133,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#password').should('have.attr', 'type', 'password');",
+                  "err": {},
+                  "uuid": "9426c975-77bb-469a-bc2a-52f610af5b49",
+                  "parentUUID": "cbb5cbde-4abd-479d-8827-886c1b75cbb0",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "form has proper attributes",
+                  "fullTitle": "Login E2E tests Security form has proper attributes",
+                  "timedOut": null,
+                  "duration": 230,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('form').should('exist');\ncy.get('input#username').should('have.attr', 'type', 'text')\n    .or('have.attr', 'type', 'email');",
+                  "err": {
+                    "message": "TypeError: cy.get(...).should(...).or is not a function",
+                    "estack": "TypeError: cy.get(...).should(...).or is not a function\n    at Context.eval (webpack://task-manager/./cypress/e2e/test_login.cy.ts:192:9)\n    at runnable.fn (http://localhost:4200/__cypress/runner/cypress_runner.js:146091:19)\n    at callFn (http://localhost:4200/__cypress/runner/cypress_runner.js:165185:21)\n    at Runnable.run (http://localhost:4200/__cypress/runner/cypress_runner.js:165172:7)\n    at <unknown> (http://localhost:4200/__cypress/runner/cypress_runner.js:171267:30)\n    at PassThroughHandlerContext.finallyHandler (http://localhost:4200/__cypress/runner/cypress_runner.js:4042:23)\n    at PassThroughHandlerContext.tryCatcher (http://localhost:4200/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise._settlePromiseFromHandler (http://localhost:4200/__cypress/runner/cypress_runner.js:1489:31)\n    at Promise._settlePromise (http://localhost:4200/__cypress/runner/cypress_runner.js:1546:18)",
+                    "diff": null
+                  },
+                  "uuid": "21ee29e2-2885-4876-82a4-bc16ee5f994b",
+                  "parentUUID": "cbb5cbde-4abd-479d-8827-886c1b75cbb0",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "9426c975-77bb-469a-bc2a-52f610af5b49"
+              ],
+              "failures": [
+                "21ee29e2-2885-4876-82a4-bc16ee5f994b"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 363,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "b41c2d9c-a332-49c5-9328-62b5cf2aeef7",
+              "title": "Accessibility",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "form fields have labels or placeholders",
+                  "fullTitle": "Login E2E tests Accessibility form fields have labels or placeholders",
+                  "timedOut": null,
+                  "duration": 245,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').should('have.attr', 'placeholder')\n    .or('have.attr', 'aria-label');\ncy.get('input#password').should('have.attr', 'placeholder')\n    .or('have.attr', 'aria-label');",
+                  "err": {
+                    "message": "TypeError: cy.get(...).should(...).or is not a function",
+                    "estack": "TypeError: cy.get(...).should(...).or is not a function\n    at Context.eval (webpack://task-manager/./cypress/e2e/test_login.cy.ts:199:9)\n    at runnable.fn (http://localhost:4200/__cypress/runner/cypress_runner.js:146091:19)\n    at callFn (http://localhost:4200/__cypress/runner/cypress_runner.js:165185:21)\n    at Runnable.run (http://localhost:4200/__cypress/runner/cypress_runner.js:165172:7)\n    at <unknown> (http://localhost:4200/__cypress/runner/cypress_runner.js:171267:30)\n    at PassThroughHandlerContext.finallyHandler (http://localhost:4200/__cypress/runner/cypress_runner.js:4042:23)\n    at PassThroughHandlerContext.tryCatcher (http://localhost:4200/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise._settlePromiseFromHandler (http://localhost:4200/__cypress/runner/cypress_runner.js:1489:31)\n    at Promise._settlePromise (http://localhost:4200/__cypress/runner/cypress_runner.js:1546:18)",
+                    "diff": null
+                  },
+                  "uuid": "ecbf0bc9-6096-4669-9f79-9b51917ad91c",
+                  "parentUUID": "b41c2d9c-a332-49c5-9328-62b5cf2aeef7",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "can tab between form fields",
+                  "fullTitle": "Login E2E tests Accessibility can tab between form fields",
+                  "timedOut": null,
+                  "duration": 217,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('input#username').focus().should('have.focus');\ncy.get('input#username').tab();\ncy.focused().should('have.attr', 'id', 'password');",
+                  "err": {
+                    "message": "TypeError: cy.get(...).tab is not a function",
+                    "estack": "TypeError: cy.get(...).tab is not a function\n    at Context.eval (webpack://task-manager/./cypress/e2e/test_login.cy.ts:206:31)\n    at runnable.fn (http://localhost:4200/__cypress/runner/cypress_runner.js:146091:19)\n    at callFn (http://localhost:4200/__cypress/runner/cypress_runner.js:165185:21)\n    at Runnable.run (http://localhost:4200/__cypress/runner/cypress_runner.js:165172:7)\n    at <unknown> (http://localhost:4200/__cypress/runner/cypress_runner.js:171267:30)\n    at PassThroughHandlerContext.finallyHandler (http://localhost:4200/__cypress/runner/cypress_runner.js:4042:23)\n    at PassThroughHandlerContext.tryCatcher (http://localhost:4200/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise._settlePromiseFromHandler (http://localhost:4200/__cypress/runner/cypress_runner.js:1489:31)\n    at Promise._settlePromise (http://localhost:4200/__cypress/runner/cypress_runner.js:1546:18)",
+                    "diff": null
+                  },
+                  "uuid": "1e77c9e0-dca7-4472-aef1-317b4d923750",
+                  "parentUUID": "b41c2d9c-a332-49c5-9328-62b5cf2aeef7",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [],
+              "failures": [
+                "ecbf0bc9-6096-4669-9f79-9b51917ad91c",
+                "1e77c9e0-dca7-4472-aef1-317b4d923750"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 462,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "0d88547a-dca7-4cad-a454-b7d58c81d4a6",
+              "title": "Multiple Login Attempts",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "handles multiple rapid submissions",
+                  "fullTitle": "Login E2E tests Multiple Login Attempts handles multiple rapid submissions",
+                  "timedOut": null,
+                  "duration": 4785,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.intercept('POST', `${apiUrl}/login`).as('loginRequest');\ncy.get('input#username').type('m@yopmail.com');\ncy.get('input#password').type('123456');\ncy.get('form').submit();\ncy.get('form').submit();\ncy.url({ timeout: 10000 }).should('include', '/tasks');",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `form`, but never found it.",
+                    "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `form`, but never found it.\n    at Context.eval (webpack://task-manager/./cypress/e2e/test_login.cy.ts:219:9)",
+                    "diff": null
+                  },
+                  "uuid": "d0caf225-2f13-44c6-8080-0fcdf3ea1a6b",
+                  "parentUUID": "0d88547a-dca7-4cad-a454-b7d58c81d4a6",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [],
+              "failures": [
+                "d0caf225-2f13-44c6-8080-0fcdf3ea1a6b"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 4785,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.2"
+    }
+  }
+}

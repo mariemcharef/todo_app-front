@@ -59,7 +59,7 @@ describe('Login E2E tests', () => {
       cy.get('form').submit();
 
       cy.wait('@loginRequest');
-      cy.get('body').should('contain', /login failed|invalid credentials|error/i);
+      cy.get('body').should('match', /login failed|invalid credentials|error/i);
     });
 
     it('handles server error gracefully', () => {
@@ -72,8 +72,9 @@ describe('Login E2E tests', () => {
       cy.wait('@loginRequest');
       
       cy.get('body').then(($body) => {
-        if ($body.text().includes('error') || $body.text().includes('failed')) {
-          cy.contains(/error|failed/i).should('be.visible');
+        const bodyText = $body.text().toLowerCase();
+        if (bodyText.includes('error') || bodyText.includes('failed')) {
+          cy.wrap($body).should('match', /error|failed/i);
         }
       });
     });
@@ -95,9 +96,14 @@ describe('Login E2E tests', () => {
       cy.get('input#password').type('wrongpassword');
       cy.get('form').submit();
 
-      cy.get('body', { timeout: 10000 }).should('contain.text', 'error')
-        .or('contain.text', 'failed')
-        .or('contain.text', 'invalid');
+      cy.get('body', { timeout: 10000 }).then(($body) => {
+        const text = $body.text().toLowerCase();
+        expect(
+          text.includes('error') || 
+          text.includes('failed') || 
+          text.includes('invalid')
+        ).to.be.true;
+      });
     });
 
     it('stays on login page after failed login', () => {
@@ -112,18 +118,17 @@ describe('Login E2E tests', () => {
   describe('Loading State', () => {
     it('disables submit button during login', () => {
       cy.intercept('POST', `${apiUrl}/login`, (req) => {
-        req.continue((res) => {
-          res.delay = 1000;
+        req.on('response', (res) => {
+          res.setDelay(1000);
         });
       }).as('loginRequest');
 
       cy.get('input#username').type('m@yopmail.com');
       cy.get('input#password').type('123456');
       
-      const submitButton = cy.get('button[type="submit"]');
-      submitButton.click();
+      cy.get('button[type="submit"]').click();
 
-      submitButton.should('be.disabled');
+      cy.get('button[type="submit"]').should('be.disabled');
     });
   });
 
@@ -142,6 +147,8 @@ describe('Login E2E tests', () => {
       cy.get('body').then(($body) => {
         if ($body.find('a[href*="/register"]').length > 0) {
           cy.get('a[href*="/register"]').should('be.visible');
+        } else {
+          cy.log('Registration link not found - skipping test');
         }
       });
     });
@@ -150,13 +157,15 @@ describe('Login E2E tests', () => {
       cy.get('body').then(($body) => {
         if ($body.find('a[href*="/forgot"]').length > 0) {
           cy.get('a[href*="/forgot"]').should('be.visible');
+        } else {
+          cy.log('Forgot password link not found - skipping test');
         }
       });
     });
   });
 
   describe('Form Behavior', () => {
-    it('clears password on failed login attempt', () => {
+    it('retains email on failed login attempt', () => {
       cy.get('input#username').type('wrong@example.com');
       cy.get('input#password').type('wrongpassword');
       cy.get('form').submit();
@@ -188,22 +197,32 @@ describe('Login E2E tests', () => {
 
     it('form has proper attributes', () => {
       cy.get('form').should('exist');
-      cy.get('input#username').should('have.attr', 'type', 'text')
-        .or('have.attr', 'type', 'email');
+      cy.get('input#username').invoke('attr', 'type').should('match', /text|email/);
     });
   });
 
   describe('Accessibility', () => {
     it('form fields have labels or placeholders', () => {
-      cy.get('input#username').should('have.attr', 'placeholder')
-        .or('have.attr', 'aria-label');
-      cy.get('input#password').should('have.attr', 'placeholder')
-        .or('have.attr', 'aria-label');
+      cy.get('input#username').then(($input) => {
+        expect(
+          $input.attr('placeholder') || 
+          $input.attr('aria-label') ||
+          $input.attr('aria-labelledby')
+        ).to.exist;
+      });
+
+      cy.get('input#password').then(($input) => {
+        expect(
+          $input.attr('placeholder') || 
+          $input.attr('aria-label') ||
+          $input.attr('aria-labelledby')
+        ).to.exist;
+      });
     });
 
     it('can tab between form fields', () => {
       cy.get('input#username').focus().should('have.focus');
-      cy.get('input#username').tab();
+      cy.get('input#username').realPress('Tab');
       cy.focused().should('have.attr', 'id', 'password');
     });
   });
@@ -215,7 +234,6 @@ describe('Login E2E tests', () => {
       cy.get('input#username').type('m@yopmail.com');
       cy.get('input#password').type('123456');
       
-      cy.get('form').submit();
       cy.get('form').submit();
       
       cy.url({ timeout: 10000 }).should('include', '/tasks');
