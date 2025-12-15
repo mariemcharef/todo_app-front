@@ -43,17 +43,27 @@ To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use th
 ```bash
 ng test
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+for running specific test files, you can use:
 
 ```bash
-ng e2e
+npx vitest run path/to/your/testfile.spec.ts
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Running end-to-end tests (cypress)
 
-## Additional Resources
+For end-to-end (e2e cypress) testing, run:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npx cypress run
+```
+ For opening the Cypress Test Runner in interactive mode, use:
+
+```bash
+npx cypress open
+```
+For running specific e2e test files, you can use:
+
+```bash
+npx cypress run --spec "cypress/e2e/path/to/your/testfile.cy.ts"
+```
+
