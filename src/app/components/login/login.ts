@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { authService } from '../../services/auth/auth-service';
@@ -20,7 +20,8 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private authService: authService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef  // Add this
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
@@ -34,25 +35,36 @@ export class Login {
        return;
     }
 
-
     this.loading = true;
     this.errorMessage = '';
 
     this.authService.login(this.loginForm.value).subscribe({
-    next: (response) => {
-      if (response.access_token) { 
-        this.router.navigate(['/tasks']);
+      next: (response) => {
         this.loading = false;
-      } else {
-        this.errorMessage = response.message || 'Login failed';
+        if (response.access_token) { 
+          this.router.navigate(['/tasks']);
+        } else {
+          this.errorMessage = response.message || 'Login failed';
+          this.cdr.detectChanges(); 
+        }
+      },
+      error: (error) => {
+        console.error('Login error:', error); 
         this.loading = false;
+        
+        if (error.error?.message) {
+          this.errorMessage = error.error.message;
+        } else if (error.message) {
+          this.errorMessage = error.message;
+        } else if (error.statusText) {
+          this.errorMessage = error.statusText;
+        } else {
+          this.errorMessage = 'Invalid credentials. Please try again.';
+        }
+        
+        this.cdr.detectChanges(); 
       }
-    },
-    error: (error) => {
-      this.errorMessage = error.error?.message || 'An error occurred';
-      this.loading = false;
-    }
-  });
+    });
   }
 
   loginWithGoogle() {

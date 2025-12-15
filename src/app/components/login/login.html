@@ -29,9 +29,10 @@
         </div>
       </div>
 
-      <div class="error-message" *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
+      <div *ngIf="errorMessage" class="error-message server-error">
+  {{ errorMessage }}
+</div>
+
 
       <button type="submit" [disabled]="loading || loginForm.invalid" class="btn btn-primary">
         {{ loading ? 'Loading...' : 'Login' }}

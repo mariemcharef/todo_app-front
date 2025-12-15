@@ -7,7 +7,7 @@ describe('Task List E2E Tests', () => {
     cy.get('input#username').type('m@yopmail.com');
     cy.get('input#password').type('123456');
     cy.get('form').submit();
-    cy.url({ timeout: 10000 }).should('include', '/tasks');
+    cy.url({ timeout: 1000 }).should('include', '/tasks');
   });
 
   describe('Page Layout and Header', () => {
@@ -148,7 +148,6 @@ describe('Task List E2E Tests', () => {
       
       const taskCard = cy.get('.task-card').first();
       
-      // Click state badge multiple times
       taskCard.find('.task-state-badge').click();
       cy.wait('@toggleState');
       

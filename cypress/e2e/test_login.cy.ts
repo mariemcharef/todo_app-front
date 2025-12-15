@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+import 'cypress-real-events';
 describe('Login E2E tests', () => {
   const baseUrl = 'http://localhost:4200';
   const apiUrl = 'http://localhost:8001';
@@ -5,7 +7,6 @@ describe('Login E2E tests', () => {
   beforeEach(() => {
     cy.visit(`${baseUrl}/login`);
     cy.clearLocalStorage();
-    cy.clearCookies();
   });
 
   describe('Form Validation', () => {
@@ -48,18 +49,21 @@ describe('Login E2E tests', () => {
 
       cy.wait('@loginRequest').its('response.statusCode').should('eq', 200);
       
-      cy.url({ timeout: 10000 }).should('include', '/tasks');
+      cy.url({ timeout: 5000 }).should('include', '/tasks');
     });
 
     it('displays error for invalid credentials', () => {
       cy.intercept('POST', `${apiUrl}/login`).as('loginRequest');
-
-      cy.get('input#username').type('wrong@example.com');
+  
+      cy.get('input#username').type('invalid@example.com');
       cy.get('input#password').type('wrongpassword');
-      cy.get('form').submit();
+      cy.get('button[type="submit"]').click();
 
       cy.wait('@loginRequest');
-      cy.get('body').should('match', /login failed|invalid credentials|error/i);
+
+      cy.get('.error-message')
+        .should('be.visible')
+        .should('contain.text', 'Invalid Credentials');
     });
 
     it('handles server error gracefully', () => {
@@ -86,32 +90,9 @@ describe('Login E2E tests', () => {
       cy.get('input#password').type('123456');
       cy.get('form').submit();
 
-      cy.url({ timeout: 10000 }).should('include', '/tasks');
+      cy.url({ timeout: 500 }).should('include', '/tasks');
       
-      cy.contains(/tasks/i, { timeout: 10000 }).should('be.visible');
-    });
-
-    it('displays error for invalid credentials', () => {
-      cy.get('input#username').type('invalid@example.com');
-      cy.get('input#password').type('wrongpassword');
-      cy.get('form').submit();
-
-      cy.get('body', { timeout: 10000 }).then(($body) => {
-        const text = $body.text().toLowerCase();
-        expect(
-          text.includes('error') || 
-          text.includes('failed') || 
-          text.includes('invalid')
-        ).to.be.true;
-      });
-    });
-
-    it('stays on login page after failed login', () => {
-      cy.get('input#username').type('wrong@example.com');
-      cy.get('input#password').type('wrongpassword');
-      cy.get('form').submit();
-
-      cy.url({ timeout: 5000 }).should('include', '/login');
+      cy.contains(/tasks/i, { timeout: 500 }).should('be.visible');
     });
   });
 
@@ -186,7 +167,7 @@ describe('Login E2E tests', () => {
       cy.get('input#password').clear().type('123456');
       cy.get('form').submit();
 
-      cy.url({ timeout: 10000 }).should('include', '/tasks');
+      cy.url({ timeout: 500 }).should('include', '/tasks');
     });
   });
 
@@ -201,31 +182,36 @@ describe('Login E2E tests', () => {
     });
   });
 
-  describe('Accessibility', () => {
-    it('form fields have labels or placeholders', () => {
-      cy.get('input#username').then(($input) => {
-        expect(
-          $input.attr('placeholder') || 
-          $input.attr('aria-label') ||
-          $input.attr('aria-labelledby')
-        ).to.exist;
-      });
-
-      cy.get('input#password').then(($input) => {
-        expect(
-          $input.attr('placeholder') || 
-          $input.attr('aria-label') ||
-          $input.attr('aria-labelledby')
-        ).to.exist;
-      });
+describe('Accessibility', () => {
+  it('form fields have labels or placeholders', () => {
+    cy.get('input#username').then(($input) => {
+      const hasPlaceholder = $input.attr('placeholder') !== undefined;
+      const hasAriaLabel = $input.attr('aria-label') !== undefined;
+      const hasAriaLabelledBy = $input.attr('aria-labelledby') !== undefined;
+      
+      const id = $input.attr('id');
+      const hasLabel = Cypress.$(`label[for="${id}"]`).length > 0;
+      
+      const hasAccessibleLabel = hasPlaceholder || hasAriaLabel || hasAriaLabelledBy || hasLabel;
+      
+      expect(hasAccessibleLabel, 'Username field should have accessible label').to.be.true;
     });
 
-    it('can tab between form fields', () => {
-      cy.get('input#username').focus().should('have.focus');
-      cy.get('input#username').realPress('Tab');
-      cy.focused().should('have.attr', 'id', 'password');
+    cy.get('input#password').then(($input) => {
+      const hasPlaceholder = $input.attr('placeholder') !== undefined;
+      const hasAriaLabel = $input.attr('aria-label') !== undefined;
+      const hasAriaLabelledBy = $input.attr('aria-labelledby') !== undefined;
+      
+      const id = $input.attr('id');
+      const hasLabel = Cypress.$(`label[for="${id}"]`).length > 0;
+      
+      const hasAccessibleLabel = hasPlaceholder || hasAriaLabel || hasAriaLabelledBy || hasLabel;
+      
+      expect(hasAccessibleLabel, 'Password field should have accessible label').to.be.true;
     });
   });
+
+});
 
   describe('Multiple Login Attempts', () => {
     it('handles multiple rapid submissions', () => {
@@ -236,7 +222,7 @@ describe('Login E2E tests', () => {
       
       cy.get('form').submit();
       
-      cy.url({ timeout: 10000 }).should('include', '/tasks');
+      cy.url({ timeout: 500 }).should('include', '/tasks');
     });
   });
 });

@@ -54,6 +54,7 @@
     "@vitest/ui": "^4.0.15",
     "concurrently": "^9.2.1",
     "cypress-mochawesome-reporter": "^4.0.2",
+    "cypress-real-events": "^1.15.0",
     "happy-dom": "^20.0.11",
     "jsdom": "^27.1.0",
     "mochawesome": "^7.1.4",
